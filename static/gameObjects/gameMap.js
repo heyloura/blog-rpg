@@ -1,254 +1,181 @@
-class Node {
-    constructor(value) {
-        this.value = value ?? {};
-        this.adjacents = [];
-    }
-
-    addAdjacent(node) {
-        if(this.adjacents.indexOf(node) == -1) {
-            this.adjacents.push(node);
-        }   
-    }
-
-    removeAdjacent(node) {
-        this.adjacents = this.adjacents.filter(adj => adj != node);
-    }
-
-    isAdjacent(node) {
-        return this.adjacents.indexOf(node) > -1;
-    }
+const makeWalkingFrames = (rootFrame = 0) => {
+return {
+    duration: 400,
+    frames: [
+        {time: 0, frame: rootFrame },
+        {time: 100, frame: rootFrame + 1 },
+        {time: 200, frame: rootFrame + 2 },
+        {time: 300, frame: rootFrame + 3 },
+    ]
+}
 }
 
-const GRAPH_DIRECTED = "Directed";
-const GRAPH_UNDIRECTED = "Undirected";
-class Graph {
-    constructor(edgeDirection = GRAPH_UNDIRECTED) {
-        this.nodes = new Map();
-        this.edgeDirection = edgeDirection;
-    }
+// const WALK_DOWN =  makeWalkingFrames(0);
+// const WALK_RIGHT =  makeWalkingFrames(3);
+// const WALK_UP =  makeWalkingFrames(6);
+// const WALK_LEFT =  makeWalkingFrames(9);
 
-    addEdge(source, destination) {
-        const sourceNode = this.addVertex(source);
-        const destinationNode = this.addVertex(destination);
+const WALK_DOWN = makeWalkingFrames(144 + SEASON);
+const WALK_RIGHT = WALK_DOWN;
+const WALK_UP = WALK_DOWN;
+const WALK_LEFT = WALK_DOWN;
 
-        sourceNode.addAdjacent(destinationNode);
-
-        if(this.edgeDirection === GRAPH_UNDIRECTED) {
-            destinationNode.addAdjacent(sourceNode)
-        }
-
-        return [sourceNode, destinationNode];
-    }
-
-    addVertex(value) {
-        if(this.nodes.has(value)) {
-            return this.nodes.get(value);
-        }
-
-        const vertex = new Node(value);
-        this.nodes.set(value, vertex);
-        return vertex;
-    }
-
-    removeVertex(value) {
-        const current = this.nodes.get(value);
-        if(current) {
-            this.nodes.forEach(node => node.removeAdjacent(current));
-        }
-        return this.nodes.delete(value);
-    }
-
-    removeEdge(source, destination) {
-        const sourceNode = this.nodes.get(source);
-        const destinationNode = this.nodes.get(destination);
-
-        if(sourceNode && destinationNode) {
-            sourceNode.removeAdjacent(destinationNode);
-
-            if(this.edgeDirection === GRAPH_UNDIRECTED) {
-                destinationNode.removeAdjacent(sourceNode);
-            }
-        }
-
-        return [sourceNode, destinationNode];
-    }
-
-    getVerticies() {
-        return this.nodes;
-    }
+const makeStandingFrames = (rootFrame = 0) => {
+return {
+    duration: 400,
+    frames: [
+        {time: 0, frame: rootFrame }
+    ]
+}
 }
 
-function randomIntFromInterval(min, max) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min);
+// const STAND_DOWN =  makeStandingFrames(144 + SEASON);
+// const STAND_RIGHT =  makeStandingFrames(145 + SEASON);
+// const STAND_UP =  makeStandingFrames(146 + SEASON);
+// const STAND_LEFT =  makeStandingFrames(147 + SEASON);
+
+const STAND_DOWN =  makeStandingFrames(144 + SEASON);
+const STAND_RIGHT =  STAND_DOWN;
+const STAND_UP =  STAND_DOWN;
+const STAND_LEFT =  STAND_DOWN;
+
+const PICK_UP_DOWN = {
+    duration: 400,
+    frames: [
+        { time: 0, frame: 145 + SEASON }
+    ]
 }
 
-function getRandomKey(collection) {
-    let keys = Array.from(collection.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
-}
-
-function assignVertexToGrid(node, numberOfNodes, visitedCount = 1) {
-    console.log(node.value.type, node.value.position, numberOfNodes, visitedCount)
-    if(visitedCount == numberOfNodes) {
-        return;
-    }
-    node.adjacents.forEach((adj, index) => {
-        if(!adj.value.visited) {    
-            var parentPostion = node.value.position
-            adj.value.visited = true;    
-            if(index == 0) {
-                adj.value.position = new Vector2(parentPostion.x + 1, parentPostion.y);
-            }
-            if(index == 1) {
-                adj.value.position = new Vector2(parentPostion.x + 1, parentPostion.y + 1);
-            }
-            if(index == 2) {
-                adj.value.position = new Vector2(parentPostion.x + 1, parentPostion.y - 1);
-            }
-            assignVertexToGrid(adj, numberOfNodes, visitedCount + 1) 
-        }
-    });
-}
-
-class GameMap extends GameObject {
-    constructor() {
-        super({});
-
-        // I want each dungeon to have an entrance
-        // two encounters
-        // boss encounter
-        // discover Loura
-
-        const graph = new Graph();
-
-        const rooms = [];
-        rooms.push({type: "entrance", visited: false});
-        rooms.push({type: "encounter1", visited: false});
-        rooms.push({type: "encounter2", visited: false});
-        rooms.push({type: "boss", visited: false});
-        rooms.push({type: "me", visited: false});
-
-        //first walk
-        const roomNodes = [];
-        for(var i = 0; i < rooms.length; i++) {
-            var connects = randomIntFromInterval(0, rooms.length - 1);
-            if(connects == i) {
-                // this is a self connection
-                while(connects == i) {
-                    connects = randomIntFromInterval(0, rooms.length - 1);
-                }
-            }
-            console.log(rooms[i].type + ' connects to  ' + rooms[connects].type)
-            graph.addEdge(rooms[i], rooms[connects]);
-        }
-
-        console.log('---------------------------------')
-
-        // starting node for snap to grid
-        let visited = [];
-        const nodes = graph.getVerticies();
-        const startingNode = nodes.get(getRandomKey(nodes));
-        startingNode.value.position = new Vector2(0, 0);
-        startingNode.value.visited = true;
-        
-        assignVertexToGrid(startingNode, nodes.size);
-        let height = 0;
-        let width = 0;
-        let minHeight = 0 
-
-        nodes.forEach(node => {
-            if(node.value.position && node.value.position.x > width)
-            {
-                width = node.value.position.x;
-            }
-            if(node.value.position && node.value.position.y > height)
-            {
-                height = node.value.position.y;
-            }
-            if(node.value.position && node.value.position.y < minHeight)
-            {
-                minHeight = node.value.position.y;
-            }
+class Hero extends GameObject {
+    constructor(x,y) {
+        super({
+            position: new Vector2(x,y)
         });
 
-        height = height + Math.abs(minHeight);
+        const shadow = new Sprite({
+            resource: global.Resources.images.shadow,
+            frameSize: new Vector2(32,32),
+            position: new Vector2(-8,-19)
+        });
+        this.addChild(shadow);
 
-        // console.log(width, height)
+        this.body = new Sprite({
+            resource: global.Resources.images.tiles,
+            frameSize: new Vector2(16,16),
+            xFrames: 18,
+            yFrames: 14*4,
+            frame: 145 + SEASON,
+            position: new Vector2(0, 0),
+            animations: new Animations({
+                walkDown: new FrameIndexPattern(WALK_DOWN),
+                walkLeft: new FrameIndexPattern(WALK_LEFT),
+                walkRight: new FrameIndexPattern(WALK_RIGHT),
+                walkUp: new FrameIndexPattern(WALK_UP),
+                standDown: new FrameIndexPattern(STAND_DOWN),
+                standLeft: new FrameIndexPattern(STAND_LEFT),
+                standRight: new FrameIndexPattern(STAND_RIGHT),
+                standUp: new FrameIndexPattern(STAND_UP),
+                pickUpDown: new FrameIndexPattern(PICK_UP_DOWN)
+            })
+        });
+
+        this.addChild(this.body);
+        this.facingDirection = DOWN;
+        this.destinationPostion = this.position.duplicate();
+        this.itemPickUpTime = 0;
+        this.itemPickUpShell = null;
+
+        global.GameEvents.on("HERO_PICKS_UP_ITEM", this, data => { this.onPickUpItem(data) })
+    }
+
+    step(delta, root) {
+
+        if(this.itemPickUpTime > 0) {
+            this.workOnItemPickup(delta);
+            return;
+        }
+
+        const distance = moveTowards(this, this.destinationPostion, 1);
+        const hasArrived = distance <= 1;
+        if(hasArrived) {
+            this.tryMove(root);
+        }
+
+        this.tryEmitPosition();
+    }
+
+    tryEmitPosition() {
+        if(this.lastX == this.position.x && this.lastY === this.position.y) {
+            return;
+        }
+
+        this.lastX = this.position.x;
+        this.lastY = this.position.y;
+
+        global.GameEvents.emit("HERO_POSITION", this.position);
+    }
+
+    tryMove(root) {
+        const {input} = root;
+
+        if(!input.direction) {
+
+            if(this.facingDirection === LEFT) {this.body.animations.play("standLeft")}
+            if(this.facingDirection === RIGHT) {this.body.animations.play("standRight")}
+            if(this.facingDirection === UP) {this.body.animations.play("standUp")}
+            if(this.facingDirection === DOWN) {this.body.animations.play("standDown")}
+
+            return;
+        }
+
+        let nextX = this.destinationPostion.x;
+        let nextY = this.destinationPostion.y;
+        let gridSize = 16;
         
-        // var mapArray = [
-        //     [5, 5, 5, 5 ,5],
-        //     [5, 4, 4, 4 ,5],
-        //     [5, 4, 4, 4 ,5],
-        //     [5, 4, 4, 4 ,5],
-        //     [5, 5, 5, 5 ,5],
-        // ];
-
-        let summer = 0;
-        let fall = 14 * 18;
-        let winter = 42 * 18;
-        let spring = 28 * 18;
-        let season = fall;
-        var mapArray = [];
-
-        for (var y = 0; y < (height + 1) * 5; y++) {
-            var row = [];
-            for (var x = 0; x < (width + 1) * 5; x++) {
-                row.push(-1);
-            }
-            mapArray.push(row);
+        if(input.direction === DOWN) {
+            nextY += gridSize;
+            this.body.animations.play("walkDown");
+        }
+        if(input.direction === UP) {
+            nextY -= gridSize;
+            this.body.animations.play("walkUp");
+        }
+        if(input.direction === LEFT) {
+            nextX -= gridSize;
+            this.body.animations.play("walkLeft");
+        }
+        if(input.direction === RIGHT) {
+            nextX += gridSize;
+            this.body.animations.play("walkRight");
         }
 
-        for (var y = 0; y < height + 1; y++) {
-            var potentialMatch = [];
-            nodes.forEach(node => {
-                if(node.value.position.y === y) {
-                    potentialMatch.push(node);
-                }
-            });
+        this.facingDirection = input.direction ?? this.facingDirection;
 
-            for (var x = 0; x < width + 1; x++) {
-                var match = null;
-                potentialMatch.forEach(node => {
-                    if(node.value.position.x + minHeight === x) {
-                        match = node;
-                    }
-                });
-                if(match) {
-                    // draw room
-                    console.log(match);
-                    for(var my = 0; my < 5; my++) {
-                        for(var mx = 0; mx < 5; mx++) {
-                            mapArray[my + ((y + minHeight) * 5)][mx + (x * 5)] = (match.value.type == 'me' ? 20 : match.value.type == 'boss' ? 21 : match.value.type == 'entrance' ? 22 : 5) + season;
-                        }
-                    }
-                } else {
-
-                }
-
-            }
-        }
-
-        console.log(mapArray);
-
-        for (var y = 0; y < mapArray.length; y++) {
-            for (var x = 0; x < mapArray[y].length; x++) {
-                if(mapArray[y][x] > -1) {
-                    const sprite = new Sprite({
-                        resource: global.Resources.images.tiles,
-                        xFrames: 18,
-                        yFrames: 14*4,
-                        frame: mapArray[y][x],
-                        position: new Vector2(x * 16, y * 16),
-                        frameSize: new Vector2(16, 16)
-                    })
-    
-                    this.addChild(sprite);
-                }
-            }
+        if(isSpaceFree(walls, nextX, nextY)){
+            this.destinationPostion.x = nextX;
+            this.destinationPostion.y = nextY;
         }
     }
 
-    ready() {
+    workOnItemPickup(delta) {
+        this.itemPickUpTime = this.itemPickUpTime - delta;
+        this.body.animations.play("pickUpDown")
+
+        if(this.itemPickUpTime <= 0) {
+            this.itemPickUpShell.destroy();
+        }
+    }
+
+    onPickUpItem({image, position}) {
+        this.destinationPostion = position.duplicate();
+        this.itemPickUpTime = 500;
+
+        this.itemPickUpShell = new GameObject({});
+        this.itemPickUpShell.addChild(new Sprite({
+            resource: image,
+            position: new Vector2(0, -18)
+        }));
+        this.addChild(this.itemPickUpShell);
 
     }
 }
