@@ -1,7 +1,10 @@
 class Resources {
     constructor() {
         this.toLoad = {
-            tiles: "sprites/RoguelikeStarter.png"
+            tiles: "RoguelikeStarter.png",
+            hero: "hero-sheet.png",
+            shadow: "shadow.png",
+            wand: "rod.png"
         };
         this.images = {};
         Object.keys(this.toLoad).forEach(k => {
