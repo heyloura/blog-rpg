@@ -1,0 +1,81 @@
+        <script src="/utilities.js"></script>
+        <script src="/gameObject.js"></script>
+        <script src="/sprite.js"></script>
+        <script src="/resources.js"></script>
+        <script src="/input.js"></script>
+        <script src="/animations.js"></script>
+        <script src="/gameLoop.js"></script>
+        <script src="/events.js"></script>
+        <script src="/camera.js"></script>
+        <script src="/gameObjects/inventory.js"></script>
+        <script src="/gameObjects/gameMap.js"></script>
+        <script src="/gameObjects/hero.js"></script>
+        <script src="/gameObjects/wand.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event){
+      var canvas = document.createElement('canvas');
+      canvas.id = 'game';
+      document.body.prepend(canvas);
+      var context = document.getElementById('game').getContext('2d');
+
+      // Establish the root scene
+      const mainScene = new GameObject({
+          postion: new Vector2(0,0)
+      });
+
+      // Build up the scene by adding the sky, ground, and hero
+      // const skySprite = new Sprite({
+      //     resource: global.Resources.images.sky,
+      //     frameSize: new Vector2(320,180),
+      // });
+
+      // const groundSprite = new Sprite({
+      //     resource: global.Resources.images.ground,
+      //     frameSize: new Vector2(320,180),
+      // });
+      // mainScene.addChild(groundSprite);
+      const map = new GameMap();
+      mainScene.addChild(map);
+
+      const hero = new Hero(gridCells(6), gridCells(5));
+      mainScene.addChild(hero);
+
+      const camera = new Camera();
+      mainScene.addChild(camera);
+
+      const wand = new Wand(gridCells(7), gridCells(6));
+      mainScene.addChild(wand);
+
+      const inventory = new Inventory();
+
+      // Add in input handlers
+      mainScene.input = new Input();
+
+      // Establish update and draw loops
+      const update = (delta) => {
+          mainScene.stepEntry(delta, mainScene);
+      }
+      const draw = () => {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          //skySprite.drawImage(context, 0, 0);
+
+          // Save the current state and then offset
+          context.save();
+          context.translate(camera.position.x, camera.position.y)
+
+          // Draw objects
+          mainScene.draw(context, 0, 0);
+
+          // Restore the original states
+          context.restore();
+
+          // Draw above the game world
+          inventory.draw(context, 0, 0);
+      }
+
+      // Start the game
+      const gameLoop = new GameLoop(update, draw);
+      gameLoop.start();
+  });
+</script>
