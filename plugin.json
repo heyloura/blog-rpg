@@ -12,7 +12,7 @@
     "/hero-sheet.png",
     "/gameObject.js",
     "/gameLoop.js",
-    "/gameEvent.js",
+    "/gameEvents.js",
     "/camera.js",
     "/animations.js",
     "/RoguelikeStarter.png",
