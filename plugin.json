@@ -3,6 +3,22 @@
   "title": "Blog RPG",
   "description": "Adds a little interactive RPG at the top of each page",
   "includes": [
-    "/utilities.js"
+    "/utilities.js",
+    "/sprite.js",
+    "/shadow.png",
+    "/rod.png",
+    "/resources.js",
+    "/input.js",
+    "/hero-sheet.png",
+    "/gameObject.js",
+    "/gameLoop.js",
+    "/gameEvent.js",
+    "/camera.js",
+    "/animations.js",
+    "/RoguelikeStarter.png",
+    "/gameObjects/wand.js",
+    "/gameObjects/inventory.js",
+    "/gameObjects/hero.js",
+    "/gameObjects/gameMap.js",
   ]
 }
