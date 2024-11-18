@@ -2,18 +2,23 @@ const makeWalkingFrames = (rootFrame = 0) => {
 return {
     duration: 400,
     frames: [
-        {time: 0, frame: rootFrame + 1 },
-        {time: 100, frame: rootFrame },
-        {time: 200, frame: rootFrame + 1 },
-        {time: 300, frame: rootFrame + 2 },
+        {time: 0, frame: rootFrame },
+        {time: 100, frame: rootFrame + 1 },
+        {time: 200, frame: rootFrame + 2 },
+        {time: 300, frame: rootFrame + 3 },
     ]
 }
 }
 
-const WALK_DOWN =  makeWalkingFrames(0);
-const WALK_RIGHT =  makeWalkingFrames(3);
-const WALK_UP =  makeWalkingFrames(6);
-const WALK_LEFT =  makeWalkingFrames(9);
+// const WALK_DOWN =  makeWalkingFrames(0);
+// const WALK_RIGHT =  makeWalkingFrames(3);
+// const WALK_UP =  makeWalkingFrames(6);
+// const WALK_LEFT =  makeWalkingFrames(9);
+
+const WALK_DOWN = makeWalkingFrames(144 + SEASON);
+const WALK_RIGHT = WALK_DOWN;
+const WALK_UP = WALK_DOWN;
+const WALK_LEFT = WALK_DOWN;
 
 const makeStandingFrames = (rootFrame = 0) => {
 return {
@@ -24,15 +29,20 @@ return {
 }
 }
 
-const STAND_DOWN =  makeStandingFrames(1);
-const STAND_RIGHT =  makeStandingFrames(4);
-const STAND_UP =  makeStandingFrames(7);
-const STAND_LEFT =  makeStandingFrames(10);
+// const STAND_DOWN =  makeStandingFrames(144 + SEASON);
+// const STAND_RIGHT =  makeStandingFrames(145 + SEASON);
+// const STAND_UP =  makeStandingFrames(146 + SEASON);
+// const STAND_LEFT =  makeStandingFrames(147 + SEASON);
+
+const STAND_DOWN =  makeStandingFrames(144 + SEASON);
+const STAND_RIGHT =  STAND_DOWN;
+const STAND_UP =  STAND_DOWN;
+const STAND_LEFT =  STAND_DOWN;
 
 const PICK_UP_DOWN = {
     duration: 400,
     frames: [
-        { time: 0, frame: 12 }
+        { time: 0, frame: 145 + SEASON }
     ]
 }
 
@@ -50,12 +60,12 @@ class Hero extends GameObject {
         this.addChild(shadow);
 
         this.body = new Sprite({
-            resource: global.Resources.images.hero,
-            frameSize: new Vector2(32,32),
-            yFrames: 8,
-            xFrames: 3,
-            frame: 1,
-            position: new Vector2(-8, -20),
+            resource: global.Resources.images.tiles,
+            frameSize: new Vector2(16,16),
+            xFrames: 18,
+            yFrames: 14*4,
+            frame: 145 + SEASON,
+            position: new Vector2(0, 0),
             animations: new Animations({
                 walkDown: new FrameIndexPattern(WALK_DOWN),
                 walkLeft: new FrameIndexPattern(WALK_LEFT),
