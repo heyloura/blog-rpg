@@ -41,19 +41,20 @@ function moveTowards (person, destinationPostion, speed) {
 }
 
 const walls = new Set();
-walls.add(`64,48`);
-walls.add(`64,64`);
-walls.add(`64,80`);
-walls.add(`80,64`);
-walls.add(`80,80`);
-walls.add(`112,80`);
-walls.add(`128,80`);
-walls.add(`144,80`);
-walls.add(`160,80`);
+// walls.add(`64,48`);
+// walls.add(`64,64`);
+// walls.add(`64,80`);
+// walls.add(`80,64`);
+// walls.add(`80,80`);
+// walls.add(`112,80`);
+// walls.add(`128,80`);
+// walls.add(`144,80`);
+// walls.add(`160,80`);
 
 const isSpaceFree = (walls, x, y) => {
-    const str = `${x},${y}`;
-    const isWallPresent = walls.has(str);
+    return true;
+    // const str = `${x},${y}`;
+    // const isWallPresent = walls.has(str);
 
-    return !isWallPresent;
+    // return !isWallPresent;
 }
