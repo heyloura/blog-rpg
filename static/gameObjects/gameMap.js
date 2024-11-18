@@ -173,7 +173,7 @@ class GameMap extends GameObject {
 
         height = height + Math.abs(minHeight);
 
-        console.log(width, height)
+        // console.log(width, height)
         
         // var mapArray = [
         //     [5, 5, 5, 5 ,5],
@@ -183,6 +183,11 @@ class GameMap extends GameObject {
         //     [5, 5, 5, 5 ,5],
         // ];
 
+        let summer = 0;
+        let fall = 14 * 18;
+        let winter = 42 * 18;
+        let spring = 28 * 18;
+        let season = fall;
         var mapArray = [];
 
         for (var y = 0; y < (height + 1) * 5; y++) {
@@ -213,8 +218,7 @@ class GameMap extends GameObject {
                     console.log(match);
                     for(var my = 0; my < 5; my++) {
                         for(var mx = 0; mx < 5; mx++) {
-                            console.log(`mapArray[${my + ((y + minHeight) * 5)}][${mx + (x * 5)}]`)
-                            mapArray[my + ((y + minHeight) * 5)][mx + (x * 5)] = match.value.type == 'me' ? 20 : match.value.type == 'boss' ? 21 : match.value.type == 'entrance' ? 22 : 5;
+                            mapArray[my + ((y + minHeight) * 5)][mx + (x * 5)] = (match.value.type == 'me' ? 20 : match.value.type == 'boss' ? 21 : match.value.type == 'entrance' ? 22 : 5) + season;
                         }
                     }
                 } else {
@@ -224,6 +228,7 @@ class GameMap extends GameObject {
             }
         }
 
+        console.log(mapArray);
 
         for (var y = 0; y < mapArray.length; y++) {
             for (var x = 0; x < mapArray[y].length; x++) {
@@ -247,6 +252,3 @@ class GameMap extends GameObject {
 
     }
 }
-
-var global = window || global;
-global.GameMap = GameMap;
