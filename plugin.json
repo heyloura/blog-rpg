@@ -1,0 +1,8 @@
+{
+  "version": "0.1",
+  "title": "Blog RPG",
+  "description": "Adds a little interactive RPG at the top of each page",
+  "includes": [
+    "/utilities.js"
+  ]
+}
