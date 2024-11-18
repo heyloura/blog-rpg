@@ -39,6 +39,3 @@ class Inventory extends GameObject {
         });
     }
 }
-
-var global = window || global;
-global.Inventory = Inventory;
